@@ -1,12 +1,15 @@
 import type { FormProps, FormActionType, UseFormReturnType, FormSchema } from '../types/form';
-import type { NamePath } from 'ant-design-vue/lib/form/interface';
+import type { NamePath, ValidateOptions } from 'ant-design-vue/lib/form/interface';
 import type { DynamicProps } from '/#/utils';
 import { ref, onUnmounted, unref, nextTick, watch } from 'vue';
 import { isProdMode } from '/@/utils/env';
 import { error } from '/@/utils/log';
 import { getDynamicProps } from '/@/utils';
 
-export declare type ValidateFields = (nameList?: NamePath[]) => Promise<Recordable>;
+export declare type ValidateFields = (
+  nameList?: NamePath[],
+  options?: ValidateOptions,
+) => Promise<Recordable>;
 
 type Props = Partial<DynamicProps<FormProps>>;
 
@@ -112,9 +115,12 @@ export function useForm(props?: Props): UseFormReturnType {
       return form.validate(nameList);
     },
 
-    validateFields: async (nameList?: NamePath[]): Promise<Recordable> => {
+    validateFields: async (
+      nameList?: NamePath[],
+      options?: ValidateOptions,
+    ): Promise<Recordable> => {
       const form = await getForm();
-      return form.validateFields(nameList);
+      return form.validateFields(nameList, options);
     },
   };
 

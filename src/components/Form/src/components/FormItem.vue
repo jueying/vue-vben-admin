@@ -13,6 +13,7 @@
   import { cloneDeep, upperFirst } from 'lodash-es';
   import { useItemLabelWidth } from '../hooks/useLabelWidth';
   import { useI18n } from '/@/hooks/web/useI18n';
+  import { NamePath, ValidateOptions } from 'ant-design-vue/lib/form/interface';
 
   export default defineComponent({
     name: 'BasicFormItem',
@@ -36,6 +37,12 @@
       },
       setFormModel: {
         type: Function as PropType<(key: string, value: any) => void>,
+        default: null,
+      },
+      validateFields: {
+        type: Function as PropType<
+          (nameList?: NamePath[] | undefined, options?: ValidateOptions) => Promise<any>
+        >,
         default: null,
       },
       tableAction: {
@@ -226,6 +233,7 @@
             rules[characterInx].message ||
             t('component.form.maxTip', [rules[characterInx].max] as Recordable);
         }
+        rules.forEach((item) => !item.trigger && (item.trigger = 'change'));
         return rules;
       }
 
@@ -251,6 +259,10 @@
             const target = e ? e.target : null;
             const value = target ? (isCheck ? target.checked : target.value) : e;
             props.setFormModel(field, value);
+            props.validateFields([field], { triggerName: 'change' }).catch((_) => {});
+          },
+          onBlur: () => {
+            props.validateFields([field], { triggerName: 'blur' }).catch((_) => {});
           },
         };
         const Comp = componentMap.get(component) as ReturnType<typeof defineComponent>;

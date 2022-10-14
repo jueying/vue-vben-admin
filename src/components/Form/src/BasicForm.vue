@@ -17,6 +17,7 @@
           :allDefaultValues="defaultValueRef"
           :formModel="formModel"
           :setFormModel="setFormModel"
+          :validateFields="validateFields"
         >
           <template #[item]="data" v-for="item in Object.keys($slots)">
             <slot :name="item" v-bind="data || {}"></slot>
@@ -243,11 +244,11 @@
 
       function setFormModel(key: string, value: any) {
         formModel[key] = value;
-        const { validateTrigger } = unref(getBindValue);
-        if (!validateTrigger || validateTrigger === 'change') {
-          validateFields([key]).catch((_) => {});
-        }
-        emit('field-value-change', key, value);
+        // const { validateTrigger } = unref(getBindValue);
+        // if (!validateTrigger || validateTrigger === 'change') {
+        //   validateFields([key]).catch((_) => {});
+        // }
+        // emit('field-value-change', key, value);
       }
 
       function handleEnterPress(e: KeyboardEvent) {
